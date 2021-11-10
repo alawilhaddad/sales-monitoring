@@ -78,7 +78,6 @@ class Load(Excel):
                 self.state = True
             start_state()
 
-
         else:
             return
 
@@ -100,19 +99,19 @@ class Win(Tk):
     def __init__(self):
         super().__init__()
         super().overrideredirect(True)
-        self._offsetx = 0
-        self._offsety = 0
-        super().bind("<Button-1>", self.clickwin)
-        super().bind("<B1-Motion>", self.dragwin)
+        self.offset_x = 0
+        self.offset_y = 0
+        super().bind("<Button-1>", self.click_win)
+        super().bind("<B1-Motion>", self.drag_win)
 
-    def dragwin(self, event):
-        x = super().winfo_pointerx() - self._offsetx
-        y = super().winfo_pointery() - self._offsety
-        super().geometry(f"+{x}+{y}")
+    def drag_win(self, event):
+        psx = super().winfo_pointerx() - self.offset_x
+        psy = super().winfo_pointery() - self.offset_y
+        super().geometry(f"+{psx}+{psy}")
 
-    def clickwin(self, event):
-        self._offsetx = super().winfo_pointerx() - super().winfo_rootx()
-        self._offsety = super().winfo_pointery() - super().winfo_rooty()
+    def click_win(self, event):
+        self.offset_x = super().winfo_pointerx() - super().winfo_rootx()
+        self.offset_y = super().winfo_pointery() - super().winfo_rooty()
 
 
 def convert_slash(path):
@@ -201,11 +200,11 @@ def _help():
     help_window = Toplevel()
     help_window.configure(bg="#ffffff")
     help_window.overrideredirect(True)
-    ws = help_window.winfo_screenwidth()
-    hs = help_window.winfo_screenheight()
-    x = (ws / 2) - 200
-    y = (hs / 2) - 150
-    help_window.geometry(f"400x300+{int(x)}+{int(y)}")
+    help_width = help_window.winfo_screenwidth()
+    help_height = help_window.winfo_screenheight()
+    help_position_x = (help_width / 2) - 200
+    help_position_y = (help_height / 2) - 150
+    help_window.geometry(f"400x300+{int(help_position_x)}+{int(help_position_y)}")
     help_canvas = Canvas(
         help_window,
         bg="#ffffff",
@@ -217,11 +216,11 @@ def _help():
     help_canvas.place(x=0, y=0)
 
     help_background_img = PhotoImage(file=f"img/help_background.png")
-    help_background = help_canvas.create_image(
+    help_canvas.create_image(
         200.0, 150.0,
         image=help_background_img)
 
-    img0 = PhotoImage(file=f"help_close.png")
+    img0 = PhotoImage(file=f"img/help_close.png")
     b0 = Button(
         help_window,
         image=img0,
@@ -259,12 +258,12 @@ def start():
         phkt_adjustment()
         project = 'PHKT'
     date = datetime.datetime.now()
-    path = ''
 
     path = filedialog.asksaveasfilename(
         initialdir='C:/Users/mohin/Downloads/',
         title='Save File',
-        initialfile=f'{project}-{new.wb.sheetnames[1]}-{date.strftime("%Y%m%d")}-0{ceil(float(date.strftime("%d"))//7)}-Monitoring-v01.xlsx',
+        initialfile=f'{project}-{new.wb.sheetnames[1]}-{date.strftime("%Y%m%d")}-0{ceil(float(date.strftime("%d"))//7)}\
+        -Monitoring-v01.xlsx',
         filetypes=(("Excel File", "*xlsx"), ("All Files", "*.*")))
     if path == '':
         return
@@ -328,10 +327,13 @@ def eni_adjustment():
                     cell_odoo(row, column).value = f"=sum(G{row}:K{row})"
                 elif col == 1:
                     cell_odoo(row,
-                              column).value = f'=IFERROR(VLOOKUP(B{row},CHOOSE(' + '{1,2},' + f'{new.wb.sheetnames[0]}!$D$14:$D$800,{new.wb.sheetnames[0]}!${selected_col}$14:${selected_col}$800),2,0),0)'
+                              column).value = f'=IFERROR(VLOOKUP(B{row},CHOOSE(' + '{1,2},' + \
+                                              f'{new.wb.sheetnames[0]}!$D$14:$D$800,{new.wb.sheetnames[0]}!' \
+                                              f'${selected_col}$14:${selected_col}$800),2,0),0)'
                 elif col == 2:
                     cell_odoo(row,
-                              column).value = f'={cell_odoo(row, column - 2).coordinate}-{cell_odoo(row, column - 1).coordinate}'
+                              column).value = f'={cell_odoo(row, column - 2).coordinate}-' \
+                                              f'{cell_odoo(row, column - 1).coordinate}'
             elif row == max_row_odoo:
                 if col == 3:
                     pass
@@ -380,7 +382,7 @@ def phm_adjustment():
                 selected_col = get_column_letter(col + 1)
 
     for col in range(2):
-        column = max_col_odoo + col
+        # column = max_col_odoo + col
         for row in range(4, max_row_odoo + 1):
             if col == 0:
                 if 4 < row < max_row_odoo:
@@ -429,10 +431,13 @@ def phm_adjustment():
                     cell_odoo(row, column).value = f"=sum(H{row}:L{row})"
                 elif col == 1:
                     cell_odoo(row,
-                              column).value = f'=IFERROR(VLOOKUP(C{row},CHOOSE(' + '{1,2},' + f'{new.wb.sheetnames[0]}!$B$14:$B$800,{new.wb.sheetnames[0]}!${selected_col}$14:${selected_col}$800),2,0),0)'
+                              column).value = f'=IFERROR(VLOOKUP(C{row},CHOOSE(' + '{1,2},' + \
+                                              f'{new.wb.sheetnames[0]}!$B$14:$B$800,' \
+                                              f'{new.wb.sheetnames[0]}!${selected_col}$14:${selected_col}$800),2,0),0)'
                 elif col == 2:
                     cell_odoo(row,
-                              column).value = f'={cell_odoo(row, column - 2).coordinate}-{cell_odoo(row, column - 1).coordinate}'
+                              column).value = f'={cell_odoo(row, column - 2).coordinate}-' \
+                                              f'{cell_odoo(row, column - 1).coordinate}'
             elif row == max_row_odoo:
                 if col == 3:
                     pass
@@ -492,10 +497,13 @@ def phkt_adjustment():
                     cell_odoo(row, column).value = f"=sum(G{row}:K{row})"
                 elif col == 1:
                     cell_odoo(row,
-                              column).value = f"=IFERROR(VLOOKUP(B{row},CHOOSE(" + '{1,2},' + f"'{new.wb.sheetnames[0]}'!$F$6:$F$800,'{new.wb.sheetnames[0]}'!${selected_col}$6:${selected_col}$800),2,0),0)"
+                              column).value = f"=IFERROR(VLOOKUP(B{row},CHOOSE(" + '{1,2},' + \
+                                              f"'{new.wb.sheetnames[0]}'!$F$6:$F$800,'{new.wb.sheetnames[0]}'!" \
+                                              f"${selected_col}$6:${selected_col}$800),2,0),0)"
                 elif col == 2:
                     cell_odoo(row,
-                              column).value = f'={cell_odoo(row, column - 2).coordinate}-{cell_odoo(row, column - 1).coordinate}'
+                              column).value = f'={cell_odoo(row, column - 2).coordinate}-' \
+                                              f'{cell_odoo(row, column - 1).coordinate}'
             elif row == max_row_odoo:
                 if col == 3:
                     pass
