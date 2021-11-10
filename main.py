@@ -1,4 +1,5 @@
 from copy import copy
+from zipfile import *
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
@@ -9,6 +10,7 @@ import openpyxl
 import string
 import os
 import datetime
+import win32com.client
 
 
 class Excel:
@@ -46,19 +48,37 @@ class Load(Excel):
         self.path = filedialog.askopenfilename(initialdir='C:/Users/mohin/Downloads/',
                                                title='Open File',
                                                filetypes=(("Excel File", "*xlsx"), ("All Files", "*.*")))
+
         self.filename = self.path.split('/')[-1]
+
+        self.path = convert_slash(self.path)
         if self.path is None:
             return
         elif self.path != '':
-            self.wb = openpyxl.load_workbook(self.path, data_only=True)
-            self.sheet_list = self.wb.sheetnames
-            self.active_sheet = self.sheet_list[0]
-            canvas.itemconfigure(self.label, text=self.filename)
-            self.options['values'] = self.sheet_list
-            self.options['state'] = 'readonly'
-            self.var.set(self.sheet_list[0])
-            self.state = True
+            try:
+                self.wb = openpyxl.load_workbook(self.path, data_only=True)
+                self.sheet_list = self.wb.sheetnames
+                self.active_sheet = self.sheet_list[0]
+                canvas.itemconfigure(self.label, text=self.filename)
+                self.options['values'] = self.sheet_list
+                self.options['state'] = 'readonly'
+                self.var.set(self.sheet_list[0])
+                self.state = True
+            except BadZipfile:
+                messagebox.showinfo(title='Password Protected', message='Your file is password protected.')
+                self.path = remove_password_xlsx(self.path, input("password: "))
+                self.filename = self.path.split('\\')[-1]
+                self.wb = openpyxl.load_workbook(self.path, data_only=True)
+                self.sheet_list = self.wb.sheetnames
+                self.active_sheet = self.sheet_list[0]
+                canvas.itemconfigure(self.label, text=self.filename)
+                self.options['values'] = self.sheet_list
+                self.options['state'] = 'readonly'
+                self.var.set(self.sheet_list[0])
+                self.state = True
             start_state()
+
+
         else:
             return
 
@@ -93,6 +113,28 @@ class Win(Tk):
     def clickwin(self, event):
         self._offsetx = super().winfo_pointerx() - super().winfo_rootx()
         self._offsety = super().winfo_pointery() - super().winfo_rooty()
+
+
+def convert_slash(path):
+    path_list = list(path)
+    for char in path_list:
+        if char == '/':
+            index = path_list.index(char)
+            path_list[index] = '\\'
+    path = ''.join(path_list)
+    return path
+
+
+def remove_password_xlsx(filename, pw_str):
+    xcl = win32com.client.Dispatch("Excel.Application")
+    wb = xcl.Workbooks.Open(filename, False, False, None, pw_str)
+    xcl.DisplayAlerts = False
+    filename_split = filename.split('.')
+    filename_split[0] += '_unlocked'
+    filename = '.'.join(filename_split)
+    wb.SaveAs(filename, None, '', '')
+    xcl.Quit()
+    return filename
 
 
 def copy_sheet(source_sheet, target_sheet):
@@ -153,7 +195,7 @@ def quit_help():
     window.deiconify()
 
 
-def help():
+def _help():
     global help_window
     window.withdraw()
     help_window = Toplevel()
@@ -174,7 +216,7 @@ def help():
         relief="ridge")
     help_canvas.place(x=0, y=0)
 
-    help_background_img = PhotoImage(file=f"help_background.png")
+    help_background_img = PhotoImage(file=f"img/help_background.png")
     help_background = help_canvas.create_image(
         200.0, 150.0,
         image=help_background_img)
@@ -218,7 +260,7 @@ def start():
         project = 'PHKT'
     date = datetime.datetime.now()
     path = ''
-    print(int(date.strftime('%d')))
+
     path = filedialog.asksaveasfilename(
         initialdir='C:/Users/mohin/Downloads/',
         title='Save File',
@@ -425,6 +467,7 @@ def phm_adjustment():
 
 
 def phkt_adjustment():
+    global selected_col
     max_col_odoo = new.odoo_sheet.max_column
     max_row_odoo = new.odoo_sheet.max_row
     max_col_pc = new.pc_sheet.max_column
@@ -487,7 +530,15 @@ def phkt_adjustment():
 
 
 def _quit():
+    quit()
     sys.exit()
+
+
+def password_entry():
+    pass_window = Tk()
+    password_label = Label(pass_window, text='Password')
+    password_label.pack()
+    pass_window.mainloop()
 
 
 window = Win()
@@ -516,7 +567,7 @@ canvas = Canvas(
     relief="ridge")
 canvas.place(x=0, y=0)
 
-background_img = PhotoImage(file=f"background.png")
+background_img = PhotoImage(file=f"img/background.png")
 background = canvas.create_image(
     275.0, 225.0,
     image=background_img)
@@ -525,7 +576,7 @@ pc = Load(window, canvas)
 odoo = Load(window, canvas)
 new = Create()
 
-pc_icon = PhotoImage(file=f"img0.png")
+pc_icon = PhotoImage(file=f"img/img0.png")
 pc.button.config(image=pc_icon)
 pc.button.place(
     x=74, y=219,
@@ -534,7 +585,7 @@ pc.button.place(
 pc.label = canvas.create_text(500, 254, text='', font=('calibri light', 8), fill='white', anchor=E)
 pc.options.place(x=352, y=219, width=155, height=28)
 
-odoo_icon = PhotoImage(file=f"img1.png")
+odoo_icon = PhotoImage(file=f"img/img1.png")
 odoo.button.config(image=odoo_icon)
 odoo.button.place(
     x=74, y=275,
@@ -543,19 +594,19 @@ odoo.button.place(
 odoo.label = canvas.create_text(500, 309, text='', font=('calibri light', 8), fill='white', anchor=E)
 odoo.options.place(x=352, y=275, width=155, height=28)
 
-help_icon = PhotoImage(file=f"img2.png")
+help_icon = PhotoImage(file=f"img/img2.png")
 help_button = Button(
     image=help_icon,
     borderwidth=0,
     highlightthickness=0,
-    command=help,
+    command=_help,
     relief="flat")
 help_button.place(
     x=3, y=420,
     width=24,
     height=24)
 
-start_image = PhotoImage(file=f"img3.png")
+start_image = PhotoImage(file=f"img/img3.png")
 start_button = Button(
     image=start_image,
     borderwidth=0,
@@ -568,7 +619,7 @@ start_button.place(
     width=88,
     height=28)
 
-close_image = PhotoImage(file=f"img4.png")
+close_image = PhotoImage(file=f"img/img4.png")
 close_button = Button(
     image=close_image,
     borderwidth=0,
