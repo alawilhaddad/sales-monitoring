@@ -1,7 +1,7 @@
 from copy import copy
 from zipfile import *
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, Toplevel
 from tkinter import filedialog
 from tkinter import messagebox
 from openpyxl.utils import get_column_letter
@@ -205,6 +205,7 @@ def _help():
     help_position_x = (help_width / 2) - 200
     help_position_y = (help_height / 2) - 150
     help_window.geometry(f"400x300+{int(help_position_x)}+{int(help_position_y)}")
+    help_window.overrideredirect(True)
     help_canvas = Canvas(
         help_window,
         bg="#ffffff",
@@ -215,12 +216,12 @@ def _help():
         relief="ridge")
     help_canvas.place(x=0, y=0)
 
-    help_background_img = PhotoImage(file=f"img/help_background.png")
+    help_background_img = PhotoImage(file=f"win/img/help_background.png")
     help_canvas.create_image(
         200.0, 150.0,
         image=help_background_img)
 
-    img0 = PhotoImage(file=f"img/help_close.png")
+    img0 = PhotoImage(file=f"win/img/help_close.png")
     b0 = Button(
         help_window,
         image=img0,
@@ -575,7 +576,7 @@ canvas = Canvas(
     relief="ridge")
 canvas.place(x=0, y=0)
 
-background_img = PhotoImage(file=f"img/background.png")
+background_img = PhotoImage(file=f"win/img/background.png")
 background = canvas.create_image(
     275.0, 225.0,
     image=background_img)
@@ -584,7 +585,7 @@ pc = Load(window, canvas)
 odoo = Load(window, canvas)
 new = Create()
 
-pc_icon = PhotoImage(file=f"img/img0.png")
+pc_icon = PhotoImage(file=f"win/img/img0.png")
 pc.button.config(image=pc_icon)
 pc.button.place(
     x=74, y=219,
@@ -593,7 +594,7 @@ pc.button.place(
 pc.label = canvas.create_text(500, 254, text='', font=('calibri light', 8), fill='white', anchor=E)
 pc.options.place(x=352, y=219, width=155, height=28)
 
-odoo_icon = PhotoImage(file=f"img/img1.png")
+odoo_icon = PhotoImage(file=f"win/img/img1.png")
 odoo.button.config(image=odoo_icon)
 odoo.button.place(
     x=74, y=275,
@@ -602,7 +603,7 @@ odoo.button.place(
 odoo.label = canvas.create_text(500, 309, text='', font=('calibri light', 8), fill='white', anchor=E)
 odoo.options.place(x=352, y=275, width=155, height=28)
 
-help_icon = PhotoImage(file=f"img/img2.png")
+help_icon = PhotoImage(file=f"win/img/img2.png")
 help_button = Button(
     image=help_icon,
     borderwidth=0,
@@ -614,7 +615,7 @@ help_button.place(
     width=24,
     height=24)
 
-start_image = PhotoImage(file=f"img/img3.png")
+start_image = PhotoImage(file=f"win/img/img3.png")
 start_button = Button(
     image=start_image,
     borderwidth=0,
@@ -627,7 +628,7 @@ start_button.place(
     width=88,
     height=28)
 
-close_image = PhotoImage(file=f"img/img4.png")
+close_image = PhotoImage(file=f"win/img/img4.png")
 close_button = Button(
     image=close_image,
     borderwidth=0,
