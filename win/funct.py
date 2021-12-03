@@ -10,7 +10,7 @@ from tkinter.filedialog import asksaveasfilename
 from os import startfile
 
 
-def _quit():
+def exit_app():
     quit()
     sys.exit()
 
@@ -48,6 +48,18 @@ def start():
         showinfo(title='Done', message='Done!')
         startfile(path)
     quit()
+
+
+def guide():
+    print("guide")
+
+
+def setting():
+    print("setting")
+
+
+def home():
+    print("home")
 
 
 if __name__ == "__main__":
