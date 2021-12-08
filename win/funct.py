@@ -58,9 +58,5 @@ def setting():
     print("setting")
 
 
-# def home():
-#     print("home")
-
-
 if __name__ == "__main__":
     home()

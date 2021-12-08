@@ -2,16 +2,16 @@ from copy import copy
 
 
 def copy_sheet(source_sheet, target_sheet):
-    copy_cells(source_sheet, target_sheet)
     copy_sheet_attributes(source_sheet, target_sheet)
+    copy_cells(source_sheet, target_sheet)
 
 
 def copy_sheet_attributes(source_sheet, target_sheet):
     target_sheet.sheet_format = copy(source_sheet.sheet_format)
     target_sheet.sheet_properties = copy(source_sheet.sheet_properties)
     target_sheet.merged_cells = copy(source_sheet.merged_cells)
-    target_sheet.page_margins = copy(source_sheet.page_margins)
     target_sheet.freeze_panes = copy(source_sheet.freeze_panes)
+    target_sheet.page_margins = copy(source_sheet.page_margins)
 
     for rn in range(len(source_sheet.row_dimensions)):
         target_sheet.row_dimensions[rn] = copy(source_sheet.row_dimensions[rn])
@@ -48,3 +48,12 @@ def copy_cells(source_sheet, target_sheet):
 
         if source_cell.comment:
             target_cell.comment = copy(source_cell.comment)
+
+
+def copy_cell_style(cell_odoo, target_row, target_col, source_row, source_col):
+    cell_odoo(target_row, target_col).number_format = copy(cell_odoo(source_row, source_col).number_format)
+    cell_odoo(target_row, target_col).font = copy(cell_odoo(source_row, source_col).font)
+    cell_odoo(target_row, target_col).border = copy(cell_odoo(source_row, source_col).border)
+    cell_odoo(target_row, target_col).fill = copy(cell_odoo(source_row, source_col).fill)
+    cell_odoo(target_row, target_col).protection = copy(cell_odoo(source_row, source_col).protection)
+    cell_odoo(target_row, target_col).alignment = copy(cell_odoo(source_row, source_col).alignment)

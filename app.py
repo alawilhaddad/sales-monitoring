@@ -6,7 +6,6 @@ from excel.helper import convert_slash, remove_password_xlsx
 from openpyxl import *
 from zipfile import BadZipfile
 from win.funct import *
-from win.var import *
 
 
 def home_show():

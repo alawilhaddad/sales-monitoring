@@ -1,10 +1,10 @@
-from excel.var import new, pc, month_odoo, header
+from excel.var import new, pc, month_odoo
 import string
 from openpyxl.utils import get_column_letter
 from copy import copy
 
 
-def eni():
+def eni(new, pc):
     pc.month = ["JAN", "FEB", "MAR", "APR", "MEI", "JUNI", "JULI", "AGST", "SEPT", "OKT", "NOV", "DES"]
     max_col_odoo = new.odoo_sheet.max_column
     max_row_odoo = new.odoo_sheet.max_row
@@ -54,7 +54,7 @@ def eni():
                 elif col == 1:
                     cell_odoo(row,
                               column).value = f'=IFERROR(VLOOKUP(B{row},CHOOSE(' + '{1,2},' + \
-                                              f'{new.wb.sheetnames[0]}!$D$14:$D$800,{new.wb.sheetnames[0]}!' \
+                                              f'{new.workbook.sheetnames[0]}!$D$14:$D$800,{new.workbook.sheetnames[0]}!'\
                                               f'${selected_col}$14:${selected_col}$800),2,0),0)'
                 elif col == 2:
                     cell_odoo(row,

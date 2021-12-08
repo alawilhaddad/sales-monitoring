@@ -1,16 +1,19 @@
 from win32com.client import Dispatch
 
 
-def remove_password_xlsx(filename, pw_str):
+def unlock_excel(path, pw_str):
+    path = convert_slash(path)
     xcl = Dispatch("Excel.Application")
-    wb = xcl.Workbooks.Open(filename, False, False, None, pw_str)
+
+    wb = xcl.Workbooks.Open(path, False, False, None, pw_str)
     xcl.DisplayAlerts = False
-    filename_split = filename.split('.')
+    filename_split = path.split('.')
     filename_split[-2] += '_unlocked'
-    filename = '.'.join(filename_split)
-    wb.SaveAs(filename, None, '', '')
+    path = '.'.join(filename_split)
+    wb.SaveAs(path, None, '', '')
+
     xcl.Quit()
-    return filename
+    return path
 
 
 def convert_slash(path):
@@ -21,3 +24,7 @@ def convert_slash(path):
             path_list[index] = '\\'
     path = ''.join(path_list)
     return path
+
+
+if __name__ == "__main__":
+    unlock_excel("C:/Users/mohin/Downloads/Progress Control OF PHKT - Week 46 OF 2021.xlsx", input("Password: "))
