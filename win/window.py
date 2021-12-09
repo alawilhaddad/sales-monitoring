@@ -1,7 +1,6 @@
 from tkinter import *
 from tkinter import ttk
-from win.config import Win
-from controller import *
+from win.controller import *
 
 
 class Main:
@@ -75,8 +74,7 @@ class Main:
             borderwidth=0,
             highlightthickness=0,
             command=lambda menu=self : setting_show(menu),
-            relief="flat",
-            state=DISABLED)
+            relief="flat")
         self.setting_button.place(
             x=30, y=440,
             width=60,
@@ -126,6 +124,17 @@ class Main:
             state="readonly")
         self.pc_options['state'] = 'disabled'
 
+        # Initiate reload image
+        self.reload_image = PhotoImage(file=f"win/img/reload_icon.png")
+
+        # Initiate reload button for PC
+        self.reload_pc_button = Button(
+            image=self.reload_image,
+            borderwidth=0,
+            highlightthickness=0,
+            command=reload,
+            relief="flat")
+
         # Initiate textbox for PC monitoring password
         self.password = StringVar(window)
         self.entry0_img = PhotoImage(file=f"win/img/img_textBox0.png")
@@ -135,7 +144,9 @@ class Main:
             bg="#ffffff",
             textvariable=self.password,
             highlightthickness=0,
-            font=("KarlaTamilUpright-Regular", 11))
+            font=("KarlaTamilUpright-Regular", 11),
+            justify="center",
+            show="*")
 
         self.odoo_state = False # State for start condition
 
@@ -146,6 +157,14 @@ class Main:
             borderwidth=0,
             highlightthickness=0,
             command=lambda app=self: open_excel(app, odoo, pc, self.odoo_options, self.odoo_label),
+            relief="flat")
+
+        # Initiate reload button for Odoo
+        self.reload_odoo_button = Button(
+            image=self.reload_image,
+            borderwidth=0,
+            highlightthickness=0,
+            command=reload,
             relief="flat")
 
         # Initiate "load odoo report" button
@@ -160,7 +179,7 @@ class Main:
             state="readonly")
         self.odoo_options['state'] = 'disabled'
 
-
+        # Initiate start button
         self.start_image = PhotoImage(file=f"win/img/start_icon.png")
         self.start_button = Button(
             image=self.start_image,
@@ -172,12 +191,15 @@ class Main:
 
 # Help_Section --------------------------------------------------------------------------------------------------------
 
+        # Initiate help title
         self.help_title_img = PhotoImage(file=f"win/img/help_title.png")
 
 # Setting_Section -----------------------------------------------------------------------------------------------------
 
+        # Initiate help setting
         self.setting_title_img = PhotoImage(file=f"win/img/setting_title.png")
 
+        # Initiate open default open directory
         self.open_d_image = PhotoImage(file=f"win/img/open_directory.png")
         self.open_d_button = Button(
             image=self.open_d_image,
@@ -186,6 +208,7 @@ class Main:
             command=lambda: print("click"),
             relief="flat")
 
+        # Initiate open default close directory
         self.save_d_image = PhotoImage(file=f"win/img/save_directory.png")
         self.save_d_button = Button(
             image=self.save_d_image,
@@ -194,9 +217,5 @@ class Main:
             command=lambda: print("click"),
             relief="flat")
 
-
-if __name__ == "__main__":
-    root = Win()
-    main = Main(root)
-    home_show(main)
-    root.mainloop()
+        # Initiate round background
+        self.label_round = PhotoImage(file=f"win/img/label_round.png")

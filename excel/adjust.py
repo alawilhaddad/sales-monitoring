@@ -1,6 +1,6 @@
 from openpyxl.utils import get_column_letter
 import string
-from excel.copy_sheet_data import copy_cell_style
+from excel.copy_excel import copy_cell_style
 
 
 def general(new):

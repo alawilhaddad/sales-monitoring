@@ -1,6 +1,6 @@
 import sys
 from excel.var import new, pc, odoo
-from excel.copy_sheet_data import copy_sheet
+from excel.copy_excel import copy_sheet
 from excel.adjustment.eni import eni
 from excel.adjustment.phkt import phkt
 from excel.adjustment.phm_ade import phm_ade

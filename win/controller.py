@@ -7,7 +7,7 @@ from tkinter.filedialog import asksaveasfilename
 from openpyxl import *
 from datetime import *
 from os import startfile
-from excel.copy_sheet_data import *
+from excel.copy_excel import *
 from excel.adjust import general, eni, phkt, phm_edi
 import pywintypes
 
@@ -18,105 +18,149 @@ def exit_app():
 
 
 def home_show(self):
+    # Hide other menu
     setting_hide(self)
     guide_hide(self)
+
+    # Main title
     self.canvas.create_image(
         140, 92,
         anchor="nw",
         image=self.main_title_img,
         tags="home")
 
+    # Background for file name pc
     self.canvas.create_image(
         140, 310,
         anchor="nw",
         image=self.label_canvas,
         tags="home")
 
+    # Background for file name odoo
     self.canvas.create_image(
         140, 390,
         anchor="nw",
         image=self.label_canvas,
         tags="home")
 
+    # Upper blue rectangle
     self.canvas.create_rectangle(
-        370, 350, 370 + 120, 350 + 40,
+        370, 270, 370 + 200, 270 + 40,
         fill="#81c0f2",
         outline="",
         tags="home")
 
+    # Lower blue rectangle
     self.canvas.create_rectangle(
-        370, 270, 370 + 120, 270 + 40,
+        370, 350, 370 + 200, 350 + 40,
         fill="#81c0f2",
         outline="",
         tags="home")
 
-    self.canvas.create_text(
-        405.0, 290.0,
-        text="Pass: ",
-        fill="#ffffff",
-        font=("KarlaTamilUpright-Bold", int(11.0)),
-        tags="home")
-
+    # PC file name
     pc_label = pc.label
     self.pc_label = self.canvas.create_text(
         150.0, 322.0,
         fill="#ffffff",
         anchor="w",
-        font=("KarlaTamilUpright-Regular", int(9.0)),
+        font=("KarlaTamilUpright-Regular", 9),
         tags="home")
 
+    # Odoo file name
     odoo_label = odoo.label
     self.odoo_label = self.canvas.create_text(
         150.0, 401.0,
         fill="#ffffff",
         anchor="w",
-        font=("KarlaTamilUpright-Regular", int(9.0)),
+        font=("KarlaTamilUpright-Regular", 9),
         tags="home")
 
+    # Load PC button
     self.pc_button.place(
         x=140, y=270,
         width=230,
         height=40)
 
-    self.pc_options.place(x=490, y=270, width=120, height=40)
+    # PC sheet options
+    self.pc_options.place(x=610, y=270, width=150, height=40)
 
+    # Password title
+    self.canvas.create_text(
+        395.0, 280.0,
+        text="Pass: ",
+        fill="#ffffff",
+        anchor="nw",
+        font=("KarlaTamilUpright-Bold", 11),
+        tags="home")
+
+    # Entrybox for password
+    entry0_bg = self.canvas.create_image(
+        440.0, 275.0,
+        anchor="nw",
+        image=self.entry0_img,
+        tags="home")
     self.entry0.place(
-        x=430.0, y=280,
-        width=36.0,
-        height=22)
+        x=445.0, y=277,
+        anchor="nw",
+        width=90,
+        height=28)
 
+    # Load reload button for PC
+    self.reload_pc_button.place(
+        x=570, y=270,
+        width=40,
+        height=40)
+
+    # Load Odoo button
     self.odoo_button.place(
         x=140, y=350,
         width=230,
         height=40)
 
-    self.odoo_options.place(x=490, y=350, width=120, height=40)
+    # Odoo sheet options
+    self.odoo_options.place(x=610, y=350, width=150, height=40)
 
+    # Load reload button for Odoo
+    self.reload_odoo_button.place(
+        x=570, y=350,
+        width=40,
+        height=40)
+
+    # Start button
     self.start_button.place(
-        x=660, y=460,
-        width=100,
+        x=610, y=460,
+        width=150,
         height=40)
 
 
 def home_hide(self):
+    # Clear object with 'home' tag
     self.canvas.delete("home")
+
+    # Clear button in home sectiion
     self.pc_button.place_forget()
     self.pc_options.place_forget()
+    self.reload_pc_button.place_forget()
     self.entry0.place_forget()
     self.odoo_button.place_forget()
+    self.reload_odoo_button.place_forget()
     self.odoo_options.place_forget()
     self.start_button.place_forget()
 
 
 def guide_show(self):
+    # Clear object with 'guide' tag
     home_hide(self)
     setting_hide(self)
+
+    # Guide title
     self.canvas.create_image(
         140, 96,
         anchor="nw",
         image=self.help_title_img,
         tags="guide")
 
+    # Guide content
     self.canvas.create_text(
         150.0, 210.0,
         text="1. Download form monitoring yang dikirimkan Project Controller\n"
@@ -136,6 +180,7 @@ def guide_show(self):
 
 
 def guide_hide(self):
+    # Hide object with "guide" tag
     self.canvas.delete("guide")
 
 
@@ -151,13 +196,13 @@ def setting_show(self):
     self.canvas.create_image(
         140, 310,
         anchor="nw",
-        image=self.label_canvas,
+        image=self.label_round,
         tags="setting")
 
     self.canvas.create_image(
         140, 390,
         anchor="nw",
-        image=self.label_canvas,
+        image=self.label_round,
         tags="setting")
 
     self.open_d_button.place(
@@ -187,14 +232,15 @@ def open_excel(app, main_source, aux_source, options, label):
             main_source.load_attribute(app, options, label)
         #
         except pywintypes.com_error:
-            showwarning(title='Incorrect Password',
-                        message='Incorrect Password!\n'
-                                'Please make sure you type in correct Password')
-
-        # except AttributeError: ("Error")
+            showwarning(title='Incorrect Password!',
+                        message='Please make sure you type in correct Password')
 
     if main_source.state and aux_source.state:
         app.start_button.config(state="normal")
+
+
+def reload():
+    print("reload")
 
 
 def start(app, new_excel, pc_excel, odoo_excel):
