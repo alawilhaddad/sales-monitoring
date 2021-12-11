@@ -304,7 +304,6 @@ def start(app, new_excel, pc_excel, odoo_excel):
     elif 21 < date_number:
         week = "04"
 
-    default_save_dir = 'C:/Users/mohin/Downloads'
     path = asksaveasfilename(
         initialdir=default_save_dir,
         title='Save Validation File',
