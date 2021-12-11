@@ -239,27 +239,31 @@ def open_excel(app, main_source, aux_source, options, label):
 
 def reload(main, source, options, label):
     if askyesno(title="Clear Item", message="Are you sure you want to clear this section"):
-        source.path = None
-        source.filename = None
-        source.workbook = None
-        source.sheet_list = []
-        source.active_sheet = None
-        source.state = False
-        source.image = None
-        source.options = None
-        source.var = None
-        source.cell = None
-        source.month = []
-        source.label = None
-        source.selected_sheet = None
-        main.canvas.itemconfigure(label, text='')
-        options['values'] = ['']
-        options['state'] = 'disable'
-        options.current(0)
-        source.state = True
-        main.start_button['state'] = 'disable'
+        clear(main, source, options, label)
     else:
         pass
+
+
+def clear(main, source, options, label):
+    source.path = None
+    source.filename = None
+    source.workbook = None
+    source.sheet_list = []
+    source.active_sheet = None
+    source.state = False
+    source.image = None
+    source.options = None
+    source.var = None
+    source.cell = None
+    source.month = []
+    source.label = None
+    source.selected_sheet = None
+    main.canvas.itemconfigure(label, text='')
+    options['values'] = ['']
+    options['state'] = 'disable'
+    options.current(0)
+    source.state = True
+    main.start_button['state'] = 'disable'
 
 
 def start(app, new_excel, pc_excel, odoo_excel):
@@ -274,37 +278,55 @@ def start(app, new_excel, pc_excel, odoo_excel):
     if new_excel.workbook.sheetnames[1] == '3250':
         new_excel.month_pc = ["JAN", "FEB", "MAR", "APR", "MEI", "JUNI", "JULI", "AGST", "SEPT", "OKT", "NOV", "DES"]
         eni(new_excel)
-        new.project = 'ENI'
     elif new_excel.workbook.sheetnames[1] == '3235':
         new_excel.month_pc = ["2021-01", "2021-02", "2021-03", "2021-04", "2021-05", "2021-06", "2021-07", "2021-08",
                               "2021-09", "2021-10", "2021-11", "2021-12"]
         phm_edi(new_excel)
-        project = 'PHM'
     elif new_excel.workbook.sheetnames[1] == '3247':
         new_excel.month_pc = ['JANUARI 2021', 'FEBRUARI 2021', 'MARET 2021', 'APRIL 2021', 'MEI 2021',
                               'JUNI 2021', 'JULI 2021', 'AGUSTUS 2021', 'SEPTEMBER 2021', 'OKTOBER 2021',
                               'NOVEMBER 2021', 'DESEMBER 2021']
         phkt(new_excel)
-        project = 'PHKT'
 
     dates = datetime.now()
-    if int(dates.strftime("%d")) < 8:
+
+    date_number = int(dates.strftime("%d"))
+    month = dates.strftime("%m")
+    year = dates.strftime("%Y")
+    project_number = new_excel.workbook.sheetnames[1]
+
+    if date_number < 8:
         week = "01"
-    elif 7 < int(dates.strftime("%d")) < 15:
+    elif 7 < date_number < 15:
         week = "02"
-    elif 14 < int(dates.strftime("%d")) < 22:
+    elif 14 < date_number < 22:
         week = "03"
-    elif 21 < int(dates.strftime("%d")):
+    elif 21 < date_number:
         week = "04"
 
+    default_save_dir = 'C:/Users/mohin/Downloads'
     path = asksaveasfilename(
-        initialdir='C:/Users/mohin/Downloads/',
-        title='Save File',
-        initialfile=f'{new_excel.workbook.sheetnames[1]}-{dates.strftime("%Y%m%d")}-W{week}-Monitoring-v01.xlsx',
+        initialdir=default_save_dir,
+        title='Save Validation File',
+        initialfile=f'{year}-{month}W{week}-Validation-{project_number}-v01.xlsx',
         filetypes=(("Excel File", "*xlsx"), ("All Files", "*.*")))
+
     if path != '':
+        save_dir = '/'.join(path.split("/")[:-1])
         new_excel.workbook.save(path)
+        pc_excel.workbook.save(asksaveasfilename(
+                initialdir=save_dir,
+                title='Save PC File',
+                initialfile=f'{year}-{month}W{week}-PC-{project_number}-v01.xlsx',
+                filetypes=(("Excel File", "*xlsx"), ("All Files", "*.*"))))
+        odoo_excel.workbook.save(asksaveasfilename(
+                initialdir=save_dir,
+                title='Save Odoo File',
+                initialfile=f'{year}-{month}W{week}-Odoo-{project_number}-v01.xlsx',
+                filetypes=(("Excel File", "*xlsx"), ("All Files", "*.*"))))
         showinfo(title='Done', message='Done!')
         startfile(path)
+        clear(app, pc_excel, app.pc_options, app.pc_label)
+        clear(app, odoo_excel, app.odoo_options, app.odoo_label)
     else:
         return
