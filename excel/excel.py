@@ -26,6 +26,7 @@ class LoadExcel(Excel):
         self.selected_sheet = None
 
     def load(self, app, options, label):
+        # Filedialog open
         self.path = askopenfilename(initialdir='C:/Users/mohin/Downloads/',
                                     title='Open File',
                                     filetypes=(("Excel File", "*xlsx"),

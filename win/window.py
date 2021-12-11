@@ -3,8 +3,8 @@ from tkinter import ttk
 from win.controller import *
 
 
-class Main:
 # Initiate all widget =================================================================================================
+class Main:
     def __init__(self, window, window_height=600, window_width=800):
         # Determine window properties
         self.window = window
@@ -60,7 +60,7 @@ class Main:
             image=self.home_icon,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda menu=self : home_show(menu),
+            command=lambda menu=self: home_show(menu),
             relief="flat")
         self.home_button.place(
             x=30, y=370,
@@ -73,7 +73,7 @@ class Main:
             image=self.setting_icon,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda menu=self : setting_show(menu),
+            command=lambda menu=self: setting_show(menu),
             relief="flat")
         self.setting_button.place(
             x=30, y=440,
@@ -86,7 +86,7 @@ class Main:
             image=self.help_icon,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda menu=self : guide_show(menu),
+            command=lambda menu=self: guide_show(menu),
             relief="flat")
         self.help_button.place(
             x=30, y=510,
@@ -101,7 +101,7 @@ class Main:
         # Initiate label background
         self.label_canvas = PhotoImage(file=f"win/img/label_canvas.png")
 
-        self.pc_state = False # State for start condition
+        self.pc_state = False  # State for start condition
         self.pc_label = self.canvas.create_text(
             150.0, 322.0,
             fill="#ffffff",
@@ -115,7 +115,7 @@ class Main:
             image=self.pc_image,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda app=self, source=pc : open_excel(self, pc, odoo, self.pc_options, self.pc_label),
+            command=lambda app=self: open_excel(self, pc, odoo, self.pc_options, self.pc_label),
             relief="flat")
 
         # Initiate combobox for pc

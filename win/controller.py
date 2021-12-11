@@ -1,15 +1,15 @@
 import sys
+from datetime import *
+from excel.adjust import eni, phkt, phm_edi
+from excel.copy_excel import *
 from excel.helper import *
 from excel.var import *
-from zipfile import BadZipfile
-from tkinter.messagebox import showinfo, showwarning, askyesno
 from tkinter.filedialog import asksaveasfilename
+from tkinter.messagebox import showinfo, showwarning, askyesno
 from openpyxl import *
-from datetime import *
 from os import startfile
-from excel.copy_excel import *
-from excel.adjust import general, eni, phkt, phm_edi
 import pywintypes
+from zipfile import BadZipfile
 
 
 def exit_app():
@@ -91,8 +91,8 @@ def home_show(self):
         font=("KarlaTamilUpright-Bold", 11),
         tags="home")
 
-    # Entrybox for password
-    entry0_bg = self.canvas.create_image(
+    # Entry box for password
+    self.canvas.create_image(
         440.0, 275.0,
         anchor="nw",
         image=self.entry0_img,
