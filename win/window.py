@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from win.controller import *
+from excel.var import *
 
 
 # Initiate all widget =================================================================================================
@@ -60,7 +61,7 @@ class Main:
             image=self.home_icon,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda menu=self: home_show(menu),
+            command=lambda menu=self: home_show(menu, pc, odoo),
             relief="flat")
         self.home_button.place(
             x=30, y=370,
@@ -101,13 +102,17 @@ class Main:
         # Initiate label background
         self.label_canvas = PhotoImage(file=f"win/img/label_canvas.png")
 
-        self.pc_state = False  # State for start condition
+        # State for start condition
+        self.pc_state = False
+
+        # Initiate pc filename label
         self.pc_label = self.canvas.create_text(
             150.0, 322.0,
             fill="#ffffff",
             anchor="w",
             font=("KarlaTamilUpright-Regular", 9),
             tags="home")
+        self.canvas.itemconfigure(self.pc_label, text=pc.filename)
 
         # Initiate "load pc monitoring" button
         self.pc_image = PhotoImage(file=f"win/img/pc_icon.png")
@@ -122,7 +127,7 @@ class Main:
         self.pc_selected_sheet = StringVar(window)
         self.pc_options = ttk.Combobox(
             window,
-            textvariable=pc.sheet_list,
+            textvariable=var.pc.sheet_list,
             width=12,
             value=self.pc_selected_sheet,
             font=('karla tamil upright', 9),
@@ -157,6 +162,7 @@ class Main:
         # State for start condition
         self.odoo_state = False
 
+        # Initiate odoo filename label
         self.odoo_label = self.canvas.create_text(
             150.0, 401.0,
             fill="#ffffff",
@@ -185,7 +191,7 @@ class Main:
         self.odoo_selected_sheet = StringVar(window)
         self.odoo_options = ttk.Combobox(
             window,
-            textvariable=odoo.sheet_list,
+            textvariable=var.odoo.sheet_list,
             width=12,
             value=self.odoo_selected_sheet,
             font=('karla tamil upright', 9),
@@ -219,7 +225,7 @@ class Main:
             image=self.open_d_image,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("click"),
+            command=lambda: default_open(self),
             relief="flat")
 
         # Initiate open default close directory
@@ -228,8 +234,24 @@ class Main:
             image=self.save_d_image,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("click"),
+            command=lambda: default_save(self),
             relief="flat")
 
         # Initiate round background
         self.label_round = PhotoImage(file=f"win/img/label_round.png")
+
+        # Initiate defaul open directory label
+        self.open_label = self.canvas.create_text(
+            150.0, 322.0,
+            fill="#ffffff",
+            anchor="w",
+            font=("KarlaTamilUpright-Regular", 9),
+            tags="setting")
+
+        # Initiate defaul save directory label
+        self.save_label = self.canvas.create_text(
+            150.0, 401.0,
+            fill="#ffffff",
+            anchor="w",
+            font=("KarlaTamilUpright-Regular", 9),
+            tags="setting")

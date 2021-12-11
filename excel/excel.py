@@ -2,6 +2,7 @@ from tkinter.filedialog import *
 from tkinter.messagebox import showinfo
 from openpyxl import Workbook, load_workbook
 from excel.helper import convert_slash
+from excel import var
 
 
 class Excel:
@@ -27,7 +28,7 @@ class LoadExcel(Excel):
 
     def load(self, app, options, label):
         # Filedialog open
-        self.path = askopenfilename(initialdir='C:/Users/mohin/Downloads/',
+        self.path = askopenfilename(initialdir=var.default_open_dir,
                                     title='Open File',
                                     filetypes=(("Excel File", "*xlsx"),
                                                ("All Files", "*.*")))

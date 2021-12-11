@@ -3,10 +3,10 @@ from datetime import *
 from excel.adjust import eni, phkt, phm_edi
 from excel.copy_excel import *
 from excel.helper import *
-from excel.var import *
-from tkinter.filedialog import asksaveasfilename
+from excel import var
+from tkinter.filedialog import asksaveasfilename, askdirectory
 from tkinter.messagebox import showinfo, showwarning, askyesno
-from openpyxl import *
+import openpyxl as ex
 from os import startfile
 import pywintypes
 from zipfile import BadZipfile
@@ -17,7 +17,7 @@ def exit_app():
     sys.exit()
 
 
-def home_show(self):
+def home_show(self, pc, odoo):
     # Hide other menu
     setting_hide(self)
     guide_hide(self)
@@ -64,6 +64,7 @@ def home_show(self):
         anchor="w",
         font=("KarlaTamilUpright-Regular", 9),
         tags="home")
+    self.canvas.itemconfigure(self.pc_label, text=pc.filename)
 
     # Odoo file name
     self.odoo_label = self.canvas.create_text(
@@ -72,6 +73,7 @@ def home_show(self):
         anchor="w",
         font=("KarlaTamilUpright-Regular", 9),
         tags="home")
+    self.canvas.itemconfigure(self.odoo_label, text=odoo.filename)
 
     # Load PC button
     self.pc_button.place(
@@ -147,7 +149,7 @@ def home_hide(self):
 
 
 def guide_show(self):
-    # Clear object with 'guide' tag
+    # Clear object without 'guide' tag
     home_hide(self)
     setting_hide(self)
 
@@ -183,31 +185,56 @@ def guide_hide(self):
 
 
 def setting_show(self):
+    # Hide object without "setting" tag
     home_hide(self)
     guide_hide(self)
+
+    # Setting title
     self.canvas.create_image(
         140, 96,
         anchor="nw",
         image=self.setting_title_img,
         tags="setting")
 
+    # Open directory background
     self.canvas.create_image(
         140, 310,
         anchor="nw",
         image=self.label_round,
         tags="setting")
 
+    # Open directory label
+    self.open_label = self.canvas.create_text(
+        150.0, 322.0,
+        fill="#ffffff",
+        anchor="w",
+        font=("KarlaTamilUpright-Regular", 9),
+        tags="setting")
+    self.canvas.itemconfigure(self.open_label, text=var.default_open_dir)
+
+    # Save directory background
     self.canvas.create_image(
         140, 390,
         anchor="nw",
         image=self.label_round,
         tags="setting")
 
+    # Save directory label
+    self.save_label = self.canvas.create_text(
+        150.0, 401.0,
+        fill="#ffffff",
+        anchor="w",
+        font=("KarlaTamilUpright-Regular", 9),
+        tags="setting")
+    self.canvas.itemconfigure(self.save_label, text=var.default_save_dir)
+
+    # Set open directory button
     self.open_d_button.place(
         x=140, y=270,
         width=230,
         height=40)
 
+    # Set save directory button
     self.save_d_button.place(
         x=140, y=350,
         width=230,
@@ -215,7 +242,10 @@ def setting_show(self):
 
 
 def setting_hide(self):
+    # Hide object with "setting" tag
     self.canvas.delete('setting')
+
+    # Hide object setting button
     self.open_d_button.place_forget()
     self.save_d_button.place_forget()
 
@@ -226,7 +256,7 @@ def open_excel(app, main_source, aux_source, options, label):
     except BadZipfile:
         try:
             main_source.path = unlock_excel(main_source.path, str(app.password.get()))
-            main_source.workbook = load_workbook(main_source.path, data_only=True)
+            main_source.workbook = px.load_workbook(main_source.path, data_only=True)
             main_source.load_attribute(app, options, label)
         #
         except pywintypes.com_error:
@@ -245,6 +275,7 @@ def reload(main, source, options, label):
 
 
 def clear(main, source, options, label):
+    # Clear selection
     source.path = None
     source.filename = None
     source.workbook = None
@@ -269,10 +300,13 @@ def clear(main, source, options, label):
 def start(app, new_excel, pc_excel, odoo_excel):
     new_excel.create_excel(app)
 
+    # Copy sheet from pc and odoo to new workbook
     pc_excel.active_sheet = pc_excel.workbook[app.pc_options.get()]
     copy_sheet(pc_excel.active_sheet, new_excel.pc_sheet)
     odoo_excel.active_sheet = odoo_excel.workbook[app.odoo_options.get()]
     copy_sheet(odoo_excel.active_sheet, new_excel.odoo_sheet)
+
+    # Determine project using project number in odoo's sheet name
     if 'Sheet' in new_excel.sheet_list:
         new_excel.workbook.remove(new_excel.workbook['Sheet'])
     if new_excel.workbook.sheetnames[1] == '3250':
@@ -288,13 +322,12 @@ def start(app, new_excel, pc_excel, odoo_excel):
                               'NOVEMBER 2021', 'DESEMBER 2021']
         phkt(new_excel)
 
+    # Set time and week
     dates = datetime.now()
-
     date_number = int(dates.strftime("%d"))
     month = dates.strftime("%m")
     year = dates.strftime("%Y")
     project_number = new_excel.workbook.sheetnames[1]
-
     if date_number < 8:
         week = "01"
     elif 7 < date_number < 15:
@@ -304,12 +337,12 @@ def start(app, new_excel, pc_excel, odoo_excel):
     elif 21 < date_number:
         week = "04"
 
+    # Save as new file, odoo file, and pc file
     path = asksaveasfilename(
-        initialdir=default_save_dir,
+        initialdir=var.default_save_dir,
         title='Save Validation File',
         initialfile=f'{year}-{month}W{week}-Validation-{project_number}-v01.xlsx',
         filetypes=(("Excel File", "*xlsx"), ("All Files", "*.*")))
-
     if path != '':
         save_dir = '/'.join(path.split("/")[:-1])
         new_excel.workbook.save(path)
@@ -329,3 +362,26 @@ def start(app, new_excel, pc_excel, odoo_excel):
         clear(app, odoo_excel, app.odoo_options, app.odoo_label)
     else:
         return
+
+
+def default_open(app):
+    # Set default open directory
+    var.default_open_dir = askdirectory()
+    if var.default_open_dir:
+        with open("config.txt", "r+") as file:
+            lines = file.readlines()
+            lines[0] = f"open={var.default_open_dir}\n"
+        with open("config.txt", "w") as file:
+            file.writelines(lines)
+        app.canvas.itemconfigure(app.open_label, text=var.default_open_dir)
+
+def default_save(app):
+    # Set default save directory
+    var.default_save_dir = askdirectory()
+    if var.default_save_dir:
+        with open("config.txt", "r+") as file:
+            lines = file.readlines()
+            lines[1] = f"save={var.default_save_dir}"
+        with open("config.txt", "w") as file:
+            file.writelines(lines)
+        app.canvas.itemconfigure(app.save_label, text=var.default_save_dir)

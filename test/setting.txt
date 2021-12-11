@@ -1,0 +1,2 @@
+load=C:/Users/mohin/Downloads
+save=D:/
