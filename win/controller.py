@@ -2,7 +2,7 @@ import sys
 from excel.helper import *
 from excel.var import *
 from zipfile import BadZipfile
-from tkinter.messagebox import showinfo, showwarning
+from tkinter.messagebox import showinfo, showwarning, askyesno
 from tkinter.filedialog import asksaveasfilename
 from openpyxl import *
 from datetime import *
@@ -58,7 +58,6 @@ def home_show(self):
         tags="home")
 
     # PC file name
-    pc_label = pc.label
     self.pc_label = self.canvas.create_text(
         150.0, 322.0,
         fill="#ffffff",
@@ -67,7 +66,6 @@ def home_show(self):
         tags="home")
 
     # Odoo file name
-    odoo_label = odoo.label
     self.odoo_label = self.canvas.create_text(
         150.0, 401.0,
         fill="#ffffff",
@@ -137,7 +135,7 @@ def home_hide(self):
     # Clear object with 'home' tag
     self.canvas.delete("home")
 
-    # Clear button in home sectiion
+    # Clear button in home section
     self.pc_button.place_forget()
     self.pc_options.place_forget()
     self.reload_pc_button.place_forget()
@@ -239,8 +237,29 @@ def open_excel(app, main_source, aux_source, options, label):
         app.start_button.config(state="normal")
 
 
-def reload():
-    print("reload")
+def reload(main, source, options, label):
+    if askyesno(title="Clear Item", message="Are you sure you want to clear this section"):
+        source.path = None
+        source.filename = None
+        source.workbook = None
+        source.sheet_list = []
+        source.active_sheet = None
+        source.state = False
+        source.image = None
+        source.options = None
+        source.var = None
+        source.cell = None
+        source.month = []
+        source.label = None
+        source.selected_sheet = None
+        main.canvas.itemconfigure(label, text='')
+        options['values'] = ['']
+        options['state'] = 'disable'
+        options.current(0)
+        source.state = True
+        main.start_button['state'] = 'disable'
+    else:
+        pass
 
 
 def start(app, new_excel, pc_excel, odoo_excel):

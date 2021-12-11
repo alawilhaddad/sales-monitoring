@@ -102,6 +102,12 @@ class Main:
         self.label_canvas = PhotoImage(file=f"win/img/label_canvas.png")
 
         self.pc_state = False # State for start condition
+        self.pc_label = self.canvas.create_text(
+            150.0, 322.0,
+            fill="#ffffff",
+            anchor="w",
+            font=("KarlaTamilUpright-Regular", 9),
+            tags="home")
 
         # Initiate "load pc monitoring" button
         self.pc_image = PhotoImage(file=f"win/img/pc_icon.png")
@@ -109,7 +115,7 @@ class Main:
             image=self.pc_image,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda app=self, source=pc : open_excel(app, pc, odoo, self.pc_options, self.pc_label),
+            command=lambda app=self, source=pc : open_excel(self, pc, odoo, self.pc_options, self.pc_label),
             relief="flat")
 
         # Initiate combobox for pc
@@ -132,7 +138,7 @@ class Main:
             image=self.reload_image,
             borderwidth=0,
             highlightthickness=0,
-            command=reload,
+            command=lambda main=self: reload(main, pc, self.pc_options, self.pc_label),
             relief="flat")
 
         # Initiate textbox for PC monitoring password
@@ -148,7 +154,15 @@ class Main:
             justify="center",
             show="*")
 
-        self.odoo_state = False # State for start condition
+        # State for start condition
+        self.odoo_state = False
+
+        self.odoo_label = self.canvas.create_text(
+            150.0, 401.0,
+            fill="#ffffff",
+            anchor="w",
+            font=("KarlaTamilUpright-Regular", 9),
+            tags="home")
 
         # Initiate "load odoo report" button
         self.odoo_image = PhotoImage(file=f"win/img/odoo_icon.png")
@@ -164,7 +178,7 @@ class Main:
             image=self.reload_image,
             borderwidth=0,
             highlightthickness=0,
-            command=reload,
+            command=lambda main=self: reload(main, odoo, self.odoo_options, self.odoo_label),
             relief="flat")
 
         # Initiate "load odoo report" button
