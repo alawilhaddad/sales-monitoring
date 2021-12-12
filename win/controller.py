@@ -6,7 +6,7 @@ from excel.helper import *
 from excel import var
 from tkinter.filedialog import asksaveasfilename, askdirectory
 from tkinter.messagebox import showinfo, showwarning, askyesno
-import openpyxl as ex
+import openpyxl as px
 from os import startfile
 import pywintypes
 from zipfile import BadZipfile

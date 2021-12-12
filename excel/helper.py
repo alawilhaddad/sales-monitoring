@@ -1,9 +1,9 @@
-from win32com.client import Dispatch
+import win32com.client as w3c
 
 
 def unlock_excel(path, pw_str):
     path = convert_slash(path)
-    xcl = Dispatch("Excel.Application")
+    xcl = w3c.gencache.EnsureDispatch('Excel.Application')
 
     wb = xcl.Workbooks.Open(path, False, False, None, pw_str)
     xcl.DisplayAlerts = False
@@ -26,5 +26,4 @@ def convert_slash(path):
     return path
 
 
-if __name__ == "__main__":
-    unlock_excel("C:/Users/mohin/Downloads/Progress Control OF PHKT - Week 46 OF 2021.xlsx", input("Password: "))
+
