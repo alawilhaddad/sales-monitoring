@@ -13,8 +13,9 @@ from zipfile import BadZipfile
 
 
 def exit_app():
-    quit()
     sys.exit()
+    quit()
+
 
 
 def home_show(self, pc, odoo):
@@ -366,7 +367,7 @@ def start(app, new_excel, pc_excel, odoo_excel):
 
 def default_open(app):
     # Set default open directory
-    var.default_open_dir = askdirectory()
+    var.default_open_dir = askdirectory(initialdir=var.default_open_dir,title="Default Open Directory")
     if var.default_open_dir:
         with open("config.txt", "r+") as file:
             lines = file.readlines()
@@ -377,7 +378,7 @@ def default_open(app):
 
 def default_save(app):
     # Set default save directory
-    var.default_save_dir = askdirectory()
+    var.default_save_dir = askdirectory(initialdir=var.default_save_dir,title="Default Save Directory")
     if var.default_save_dir:
         with open("config.txt", "r+") as file:
             lines = file.readlines()
